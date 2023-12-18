@@ -2,9 +2,11 @@
 
 namespace App\Livewire;
 
+use App\Models\Category;
 use App\Models\Post;
 use Livewire\Component;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 
@@ -14,6 +16,16 @@ class PostList extends Component
 
     #[Url()]
     public $sortDir = 'desc';
+    #[Url()]
+    public $search = '';
+    #[Url()]
+    public $category = '';
+
+    #[On('search')]
+    public function updateSearch($search)
+    {
+        $this->search = $search;
+    }
 
     public function setSortDir($sortDir)
     {
@@ -25,7 +37,13 @@ class PostList extends Component
     #[Computed()]
     public function posts()
     {
-        return Post::published()->orderBy('published_at', $this->sortDir)->paginate(3);
+        return Post::published()
+            ->when(Category::where('slug', $this->category)->first(), function ($query) {
+                $query->withCategory($this->category);
+            })
+            ->where('title', 'like', "%{$this->search}%")
+            ->orderBy('published_at', $this->sortDir)
+            ->paginate(3);
     }
 
     public function render()

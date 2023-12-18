@@ -8,10 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class Post extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
+
+    protected $guarded = [];
 
     /**
      * The attributes that should be cast.
@@ -35,9 +40,21 @@ class Post extends Model
         $query->where('featured', true);
     }
 
+    public function scopeWithCategory(Builder $query, string $category): void
+    {
+        $query->whereHas('categories', function ($query) use ($category) {
+            $query->where('slug', $category);
+        });
+    }
+
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function Categories(): BelongsToMany
+    {
+        return $this->belongsToMany(Category::class);
     }
 
     public function getExcerpt()
@@ -49,5 +66,11 @@ class Post extends Model
     {
         $mins = str_word_count($this->body) / 250;
         return ($mins < 1 ? 1 : $mins);
+    }
+
+    public function getThumbnailImage()
+    {
+        $isUrl = str_contains($this->image, 'http');
+        return $isUrl ? $this->image : Storage::disk('public')->url($this->image);
     }
 }
