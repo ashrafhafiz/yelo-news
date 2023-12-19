@@ -1,8 +1,17 @@
 <div id="posts" class="px-3 py-6 lg:px-7">
     <div class="flex items-center justify-between border-b border-gray-100">
         <div class="text-lg text-gray-600">
+            @if($this->activeCategory  || $search)
+            <button class="mr-3 px-1.5 text-sm text-red-800 border-2 border-red-600 rounded-full" wire:click="clearFilters()">X</button>
+            @endif
+            @if($this->activeCategory)
+                All Posts From:
+                <x-badge wire:navigate href="{{ route('posts.index', ['category' => $this->activeCategory->slug]) }}" textColor="{{ $this->activeCategory->text_color }}" bgColor="{{ $this->activeCategory->bg_color }}">
+                    {{ $this->activeCategory->title }}
+                </x-badge>
+            @endif
             @if ($search)
-                Search results for: <span class="font-semibold">{{ $search }}</span>
+                With Search Results For: <span class="font-semibold">{{ $search }}</span>
             @endif
         </div>
         <div id="filter-selector" class="flex items-center space-x-4 font-light ">

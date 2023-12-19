@@ -25,6 +25,7 @@ class PostList extends Component
     public function updateSearch($search)
     {
         $this->search = $search;
+        $this->resetPage();
     }
 
     public function setSortDir($sortDir)
@@ -38,12 +39,25 @@ class PostList extends Component
     public function posts()
     {
         return Post::published()
-            ->when(Category::where('slug', $this->category)->first(), function ($query) {
+            ->when($this->activeCategory, function ($query) {
                 $query->withCategory($this->category);
             })
             ->where('title', 'like', "%{$this->search}%")
             ->orderBy('published_at', $this->sortDir)
             ->paginate(3);
+    }
+
+    #[Computed()]
+    public function activeCategory()
+    {
+        return Category::where('slug', $this->category)->first();
+    }
+
+    public function clearFilters()
+    {
+        $this->search = '';
+        $this->category = '';
+        $this->resetPage();
     }
 
     public function render()
