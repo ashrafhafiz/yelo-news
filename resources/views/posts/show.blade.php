@@ -6,9 +6,7 @@
         </h1>
         <div class="flex items-center justify-between mt-2">
             <div class="flex items-center py-5 text-base">
-                <img class="w-10 h-10 mr-3 rounded-full" src="{{ $post->author->profile_photo_url }}"
-                    alt="avatar">
-                <span class="mr-1">{{ $post->author->name }}</span>
+                <x-posts.author-badge :author="$post->author" size="md" />
                 <span class="text-sm text-gray-500">| {{ $post->getReadingTime() }} minutes read.</span>
             </div>
             <div class="flex items-center">
@@ -24,14 +22,13 @@
         <div
             class="flex items-center justify-between px-2 py-4 my-6 text-sm border-t border-b border-gray-100 article-actions-bar">
             <div class="flex items-center">
-                <livewire:like-button :key="$post->id" :$post/>
+                <livewire:like-button :key="$post->id" :$post />
             </div>
             <div>
                 <div class="flex items-center">
                     <button>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                            stroke-width="1.5" stroke="currentColor"
-                            class="w-5 h-5 text-gray-500 hover:text-gray-800">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5 text-gray-500 hover:text-gray-800">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
                         </svg>
@@ -47,9 +44,7 @@
 
         <div class="flex items-center mt-10 space-x-4">
             @foreach ($post->categories as $category)
-                <x-badge wire:navigate href="{{ route('posts.index', ['category' => $category->title]) }}" textColor="{{ $category->text_color }}" bgColor="{{ $category->bg_color }}">
-                    {{ $category->title }}
-                </x-badge>
+                <x-posts.category-badge :category="$category" />
             @endforeach
         </div>
 
