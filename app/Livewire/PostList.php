@@ -20,6 +20,8 @@ class PostList extends Component
     public $search = '';
     #[Url()]
     public $category = '';
+    #[Url()]
+    public $popular = false;
 
     #[On('search')]
     public function updateSearch($search)
@@ -41,6 +43,9 @@ class PostList extends Component
         return Post::published()
             ->when($this->activeCategory, function ($query) {
                 $query->withCategory($this->category);
+            })
+            ->when($this->popular, function ($query) {
+                $query->popular();
             })
             ->where('title', 'like', "%{$this->search}%")
             ->orderBy('published_at', $this->sortDir)

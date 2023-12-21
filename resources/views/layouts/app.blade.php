@@ -1,36 +1,41 @@
+@props(['title'])
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    {{-- <title>@yield('title') - {{ config('app.name', 'Laravel') }}</title> --}}
+    <title>{{ isset($title) ? $title . ' - ' : '' }}{{ config('app.name', 'Laravel') }}</title>
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-        <!-- Styles -->
-        @livewireStyles
-    </head>
-    <body class="font-sans antialiased">
-        <x-banner />
+    <!-- Scripts -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-            @include('layouts.partials.header')
+    <!-- Styles -->
+    @livewireStyles
+</head>
 
-            @yield('hero')
+<body class="font-sans antialiased">
+    <x-banner />
 
-            <main class="container mx-auto px-5 flex flex-grow">
-                {{ $slot }}
-            </main>
+    @include('layouts.partials.header')
 
-            @include('layouts.partials.footer')
+    @yield('hero')
 
-        @stack('modals')
-        @livewireScripts
-    </body>
+    <main class="container mx-auto px-5 flex flex-grow">
+        {{ $slot }}
+    </main>
+
+    @include('layouts.partials.footer')
+
+    @stack('modals')
+    @livewireScripts
+</body>
+
 </html>
