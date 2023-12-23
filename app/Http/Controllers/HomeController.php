@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
 {
@@ -13,13 +14,26 @@ class HomeController extends Controller
      */
     public function __invoke(Request $request)
     {
-        return view('home', [
-            'featuredPosts' => Post::published()
+        $featuredPosts = Cache::remember('featuredPostsItems', Carbon::now()->addHours(1), function () {
+            return Post::published()
                 ->featured()
+                ->with('categories')
                 ->latest('published_at')
                 ->take(3)
-                ->get(),
-            'latestPosts' => Post::published()->latest('published_at')->take(9)->get(),
+                ->get();
+        });
+
+        $latestPosts = Cache::remember('latestPostsItems', 3600, function () {
+            return Post::published()
+                ->with('categories')
+                ->latest('published_at')
+                ->take(9)
+                ->get();
+        });
+
+        return view('home', [
+            'featuredPosts' => $featuredPosts,
+            'latestPosts' => $latestPosts,
         ]);
     }
 }

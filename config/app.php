@@ -85,6 +85,22 @@ return [
 
     'locale' => 'en',
 
+    // we can configure supported locales array
+    'supported_locales' => [
+        'en' => [
+            'name' => 'English',
+            'icon' => 'us'
+        ],
+        'fr' => [
+            'name' => 'French',
+            'icon' => 'fr'
+        ],
+        'es' => [
+            'name' => 'Spanish',
+            'icon' => 'es'
+        ],
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Application Fallback Locale
